@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import re, operator, os
+import re, operator, os, codecs
 try:
     from StringIO import StringIO
 except ImportError:
@@ -86,16 +86,17 @@ class FileLoader:
     def filename_of(self, name):
         return os.path.join(self.basedir, name)
 
-    def load_text(self, name):
+    def load_text(self, name, encoding=None):
+        encoding = encoding or 'utf-8'
         if self.debugging:
             print("Loading text from {0} {1}".format(self.basedir, name))
-        f = open(self.filename_of(name))
+        f = codecs.open(self.filename_of(name), mode='r', encoding=encoding)
         try:
             return f.read()
         finally:
             f.close()
 
-    def load_template(self, name):
+    def load_template(self, name, encoding=None):
         if self.debugging:
             print("Loading template... {0}".format(name))
 
@@ -108,7 +109,7 @@ class FileLoader:
                 return template
         if self.debugging:
             print("loading text from disk")
-        template = Template(self.load_text(name))
+        template = Template(self.load_text(name, encoding))
         template.ensure_compiled()
         self.known_templates[name] = (template, mtime)
         return template
