@@ -235,8 +235,10 @@ class Text(_Element):
             return match.group(1)
         self.text = self.ESCAPED_CHAR.sub(unescape, text)
 
-    def evaluate(self, stream, namespace, loader):
-        stream.write(self.text)
+    def evaluate(self, stream, namespace, loader, encoding=None):
+        encoding = encoding or 'utf-8'
+        writer = codecs.getwriter(encoding)(stream)
+        writer.write(self.text)
 
 
 class FallthroughHashText(_Element):
