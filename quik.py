@@ -1,12 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import re, operator, os, codecs
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
-    xrange = range
-
+from io import BytesIO
 
 VERSION = (0, 2, 3)
 VERSION_TAG = 'dev'
@@ -115,14 +110,14 @@ class FileLoader:
         return template
 
 
-class StoppableStream(StringIO):
+class StoppableStream(BytesIO):
     def __init__(self, buf=''):
         self.stop = False
-        StringIO.__init__(self, buf)
+        BytesIO.__init__(self, buf)
 
     def write(self, s):
         if not self.stop:
-            StringIO.write(self, s)
+            BytesIO.write(self, s)
 
 
 WHITESPACE_TO_END_OF_LINE = re.compile(r'[ \t\r]*\n(.*)', re.S)
